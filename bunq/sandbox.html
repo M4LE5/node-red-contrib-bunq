@@ -1,0 +1,61 @@
+<script type="text/javascript">
+	RED.nodes.registerType('bunq-sandbox', {
+		category: 'bunq',
+		color: '#FFCD00',
+        defaults: {
+            name: {value:''},
+            bunqnode: {value:'', type:'bunq-config'},
+            action: {value:'createUser'}
+        },
+		inputs: 1,
+		outputs: 1,
+		icon: 'bunq.png',
+		label: function () {
+			return this.name || 'bunq Sandbox';
+		},
+		paletteLabel: 'Create Sandbox'
+	});
+</script>
+
+<script type="text/x-red" data-template-name="bunq-sandbox">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-bunqnode"><i class="fa fa-database"></i> Connection</label>
+        <input type="text" id="node-input-bunqnode">
+    </div>
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-random"></i> <span>Action</span></label>
+        <select type="text" id="node-input-action" style="width: 250px;">
+            <option value="createUser">Create Sandbox User</option>
+            <option value="createMonetary">Create monetary account</option>
+            <option value="createSaving">Create savings account</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bunq-sandbox">
+    <p>Create a Sandbox User.</p>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">json</span></dt>
+                <dd>the response of the API.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt>error <span class="property-type">bool</span></dt>
+                <dd>marks the request as an error.</dd>
+            </dl>
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">json</span></dt>
+                <dd>the error of the API.</dd>
+            </dl>
+        </li>
+    </ol>
+</script>

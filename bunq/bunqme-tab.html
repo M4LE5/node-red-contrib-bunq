@@ -1,0 +1,151 @@
+<script type="text/javascript">
+	RED.nodes.registerType('bunq-bunqmetab', {
+		category: 'bunq',
+		color: '#44DB5E',
+        defaults: {
+            name: {value:''},
+            bunqnode: {value:'', type:'bunq-config'},
+            action: {value:'get'},
+            monetaryaccountid: {value:''},
+            itemid: {value:''},
+            amount: {value:''},
+            currency: {value:'EUR'},
+            description: {value:''}
+        },
+		inputs: 1,
+		outputs: 1,
+		icon: 'bunq.png',
+		label: function () {
+			return this.name || 'bunq.me Tab';
+		},
+        paletteLabel: 'bunq.me Tab',
+        oneditprepare: function() {
+            $.getJSON('bunq/user/monetary-account', function(data) {
+                $('#node-input-monetaryaccountid').empty();
+                if (data.length !== 0) {
+                    for (i = 0; i < data.length; i++) {
+                        $('<option/>',{
+                                'value': data[i].id,
+                                'text': data[i].t + " (" + data[i].v + ")"
+                        }).appendTo('#node-input-monetaryaccountid');
+                    }
+                }
+                if (this.monetaryaccountid!==false) {
+                    $('#node-input-monetaryaccountid option[value="'+this.monetaryaccountid+'"]').prop('selected', true);
+                } else {
+                    $("#node-input-monetaryaccountid").val($("#node-input-monetaryaccountid option:first").val());
+                }
+            });
+            $('#node-input-action').on('change', function() {
+                $(".form-row-action-create").hide();
+                $(".form-row-action-itemID").show();
+                $("#node-input-itemid").attr("placeholder", "optional");
+                if (this.value === 'create') {
+                    $(".form-row-action-itemID").hide();
+                    $(".form-row-action-create").show();
+                } else if (this.value === 'cancel' || this.value === 'getResult') {
+                    $("#node-input-itemid").attr("placeholder", "");
+                }
+            });
+        }
+	});
+</script>
+
+<script type="text/x-red" data-template-name="bunq-bunqmetab">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-bunqnode"><i class="fa fa-database"></i> Connection</label>
+        <input type="text" id="node-input-bunqnode">
+    </div>
+    <div class="form-row">
+        <label for="node-input-monetaryaccountid"><i class="fa fa-university"></i> monetary-accountID</label>
+        <select type="text" id="node-input-monetaryaccountid" style="width: 250px;">
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-random"></i> <span>Action</span></label>
+        <select type="text" id="node-input-action" style="width: 250px;">
+            <option value="get">Get</option>
+            <option value="getResult">Get Result</option>
+            <option value="create">Create</option>
+            <option value="cancel">Cancel</option>
+        </select>
+    </div>
+    <div class="form-row form-row-action-itemID">
+        <label for="node-input-itemid"><i class="fa fa-crosshairs"></i> itemID</label>
+        <input type="text" id="node-input-itemid" placeholder="optional">
+    </div>
+    <div class="form-row-action-create">
+        <div class="form-row">
+            <label for="node-input-amount"><i class="fa fa-money"></i> Amount</label>
+            <input type="text" id="node-input-amount">
+        </div>
+        <div class="form-row">
+            <label for="node-input-currency"><i class="fa fa-eur"></i> Currency</label>
+            <select type="text" id="node-input-currency" style="width: 250px;">
+                <option value="EUR">€</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-description"><i class="fa fa-commenting-o"></i> Description</label>
+            <input type="text" id="node-input-description">
+        </div>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bunq-bunqmetab">
+    <p>bunq.me tabs allows you to create a payment request and share the link through e-mail, chat, etc. Multiple persons are able to respond to the payment request and pay through bunq, iDeal or SOFORT.</p>
+    
+    <h3>Inputs</h3>
+    <h4>Get</h4>
+    <dl class="message-properties">
+        <dt class="optional">payload.itemID <span class="property-type">string | number</span></dt>
+        <dd> the itemID. </dd>
+    </dl>
+    <h4>Get Result</h4>
+    <dl class="message-properties">
+        <dt>payload.itemID <span class="property-type">string | number</span></dt>
+        <dd> the itemID. </dd>
+    </dl>
+    <h4>Create</h4>
+    <dl class="message-properties">
+        <dt>payload.amount <span class="property-type">number</span></dt>
+        <dd> the amount required. </dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>payload.currency <span class="property-type">string</span></dt>
+        <dd> the ISO 4217 formatted currency code. </dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>payload.description <span class="property-type">string</span></dt>
+        <dd> the description. </dd>
+    </dl>
+    <h4>Cancel</h4>
+    <dl class="message-properties">
+        <dt>payload.itemID <span class="property-type">string | number</span></dt>
+        <dd> the itemID. </dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">json</span></dt>
+                <dd>the response of the API.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt>error <span class="property-type">bool</span></dt>
+                <dd>marks the request as an error.</dd>
+            </dl>
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">json</span></dt>
+                <dd>the error of the API.</dd>
+            </dl>
+        </li>
+    </ol>
+</script>

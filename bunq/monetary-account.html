@@ -1,0 +1,262 @@
+<script type="text/javascript">
+	RED.nodes.registerType('bunq-monetaryaccount', {
+		category: 'bunq',
+		color: '#00CDC0',
+        defaults: {
+            name: {value:''},
+            bunqnode: {value:'', type:'bunq-config'},
+            action: {value:'getMonetaryAccount'},
+            monetaryaccountid: {value:''},
+            itemid: {value:''},
+            amount: {value:''},
+            currency: {value:'EUR'},
+            counterpartytype: {value:'INTERNAL'},
+            counterpartyval: {value:''},
+            counterpartyname: {value:''},
+            description: {value:''},
+            timestart: {value:''},
+            timeend: {value:''},
+            schedule: {value:''},
+            unit: {value:''},
+            size: {value:''}
+        },
+		inputs: 1,
+		outputs: 1,
+		icon: 'bunq.png',
+		label: function () {
+			return this.name || 'bunq Monetary Account';
+		},
+        paletteLabel: 'Monetary Account',
+        oneditprepare: function() {
+            var monetaryaccounts = null;
+            var that = this;
+            $.getJSON('bunq/user/monetary-account', function(data) {
+                $('#node-input-monetaryaccountid').empty();
+                $('#node-input-counterpartyvalinternal').empty();
+                if (data.length !== 0) {
+                    monetaryaccounts = data;
+                    for (i = 0; i < data.length; i++) {
+                        $('<option/>',{
+                                'value': data[i].id,
+                                'text': data[i].t + " (" + data[i].v + ")"
+                        }).appendTo('#node-input-monetaryaccountid');
+                        $('<option/>',{
+                                'value': data[i].v,
+                                'text': data[i].t + " (" + data[i].v + ")"
+                        }).appendTo('#node-input-counterpartyvalinternal');
+                    }
+                }
+                console.log('#node-input-monetaryaccountid option[value="'+that.monetaryaccountid+'"]');
+                $("#node-input-monetaryaccountid").val($("#node-input-monetaryaccountid option:first").val());
+                $('#node-input-monetaryaccountid option[value="'+that.monetaryaccountid+'"]').prop('selected', true);
+                $("#node-input-counterpartyvalinternal").val($("#node-input-counterpartyvalinternal option:first").val());
+                $('#node-input-counterpartyvalinternal option[value="'+that.counterpartyval+'"]').prop('selected', true);
+            });
+
+            /*if (!$('#node-input-timestart').val()) {
+                var date = new Date(); 
+                var m = (date.getUTCMonth() <= 9) ? "0"+date.getUTCMonth() : date.getUTCMonth();
+                var d = (date.getUTCDate() <= 9) ? "0"+date.getUTCDate() : date.getUTCDate();
+                var h = (date.getUTCHours() <= 9) ? "0"+date.getUTCHours() : date.getUTCHours();
+                var mm = (date.getUTCMinutes() <= 9) ? "0"+date.getUTCMinutes() : date.getUTCMinutes();
+                var s = (date.getUTCSeconds() <= 9) ? "0"+date.getUTCSeconds() : date.getUTCSeconds();
+                $("#node-input-timestart").val(date.getUTCFullYear()+'-'+m+'-'+d+'T'+h+':'+mm+':'+s+'.000Z');
+            }*/
+
+            $('#node-input-counterpartyvalinternal').on('change', function() {
+                $("#node-input-counterpartyval").val($("#node-input-counterpartyvalinternal").val());
+            });
+
+            $('#node-input-schedule').on('change', function() {
+                if(this.checked) {
+                    $(".form-row-action-schedule").show();
+                } else {
+                    $(".form-row-action-schedule").hide();
+                }
+            });
+
+            $('#node-input-counterpartytype').on('change', function() {
+                if (this.value === 'INTERNAL') {
+                    $("#node-input-counterpartyval").hide();
+                    $(".form-row-action-counterpartyname").hide();
+                    $("#node-input-counterpartyvalinternal").show();
+                } else if (this.value === 'IBAN') {
+                    $(".form-row-action-counterpartyname").show();
+                    $("#node-input-counterpartyval").show();
+                    $("#node-input-counterpartyvalinternal").hide();
+                } else if (this.value === 'EMAIL') {
+                    $(".form-row-action-counterpartyname").show();
+                    $("#node-input-counterpartyval").show();
+                    $("#node-input-counterpartyvalinternal").hide();
+                }
+            });
+
+            $('#node-input-action').on('change', function() {
+                $(".form-row-action-itemID").hide();
+                $(".form-row-action-accountID").hide();
+                $(".form-row-action-createPayment").hide();
+                $(".form-row-action-schedule-options").hide();
+                if (this.value === 'getMonetaryAccount' || this.value === 'getSavings') {
+                    $(".form-row-action-itemID").show();
+                } else if (this.value === 'getPayment' || this.value === 'getSchedulePayment' || this.value === 'getDraftPayment' || this.value === 'getRequestPayment') {
+                    $(".form-row-action-itemID").show();
+                    $(".form-row-action-accountID").show();
+                } else if (this.value === 'createPayment') {
+                    $(".form-row-action-accountID").show();
+                    $(".form-row-action-createPayment").show();
+                    $(".form-row-tips-createPayment").show();
+                    $(".form-row-action-schedule-options").show();
+                } else if (this.value === 'createRequestPayment') {
+                    $(".form-row-action-accountID").show();
+                    $(".form-row-action-createPayment").show();
+                }
+            });
+        }
+	});
+</script>
+
+<script type="text/x-red" data-template-name="bunq-monetaryaccount">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-bunqnode"><i class="fa fa-database"></i> Connection</label>
+        <input type="text" id="node-input-bunqnode">
+    </div>
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-random"></i> <span>Action</span></label>
+        <select type="text" id="node-input-action" style="width: 250px;">
+            <option value="getMonetaryAccount">Get monetary account(s)</option>
+            <option value="getSavings">Get saving(s)</option>
+            <option value="getPayment">Get payment(s)</option>
+            <option value="getSchedulePayment">Get Schedule payment(s)</option>
+            <option value="getDraftPayment">Get draft payment(s)</option>
+            <option value="getRequestPayment">Get payment requests</option>
+            <option value="createPayment">Create payment</option>
+            <option value="createRequestPayment">Create payment requests</option>
+        </select>
+    </div>
+    <div class="form-row form-row-action-itemID">
+        <label for="node-input-itemid"><i class="fa fa-crosshairs"></i> itemID</label>
+        <input type="text" id="node-input-itemid" placeholder="(optional)">
+    </div>
+    <div class="form-row form-row-action-accountID">
+        <label for="node-input-monetaryaccountid"><i class="fa fa-university"></i> monetary-accountID</label>
+        <select type="text" id="node-input-monetaryaccountid" style="width: 250px;">
+        </select>
+    </div>
+    <div class="form-row-action-createPayment">
+        <div class="form-row">
+            <label for="node-input-amount"><i class="fa fa-money"></i> Amount</label>
+            <input type="text" id="node-input-amount">
+        </div>
+        <div class="form-row">
+            <label for="node-input-currency"><i class="fa fa-eur"></i> Currency</label>
+            <select type="text" id="node-input-currency" style="width: 250px;">
+                <option value="EUR">€</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-counterpartytype"><i class="fa fa-file-code-o"></i> Counterparty type</label>
+            <select type="text" id="node-input-counterpartytype" style="width: 250px;">
+                <option value="INTERNAL">Internal Account</option>
+                <option value="IBAN">IBAN</option>
+                <option value="EMAIL">E-Mail</option>
+            </select>
+        </div>
+        <div class="form-tips form-row-tips-createPayment"><b>Info:</b> The payment will be created as draft, if counterparty type is not INTERNAL.</div>
+        <div class="form-row">
+            <label for="node-input-counterpartyval"><i class="fa fa-bandcamp"></i> Counterparty IBAN/Account</label>
+            <input type="text" id="node-input-counterpartyval" placeholder="sugardaddy@bunq.com | NL70 BUNQ...">
+            <select type="text" id="node-input-counterpartyvalinternal" style="width: 250px;">
+            </select>
+        </div>
+        <div class="form-row form-row-action-counterpartyname">
+            <label for="node-input-counterpartyname"><i class="fa fa-text-width"></i> Counterparty Name</label>
+            <input type="text" id="node-input-counterpartyname">
+        </div>
+        <div class="form-row">
+            <label for="node-input-description"><i class="fa fa-commenting-o"></i> Description</label>
+            <input type="text" id="node-input-description">
+        </div>
+        <div class="form-row-action-schedule-options">
+            <div class="form-row">
+                <label for="node-input-timestart"><i class="fa fa-calendar-o"></i> Schedule time</label>
+                <input type="text" id="node-input-timestart" placeholder="optional: 2019-12-13T11:25:43.511Z" style="display:inline-block; width:125px; vertical-align:baseline;">
+                <span> - </span>
+                <input type="text" id="node-input-timeend" placeholder="optional: 2019-12-13T11:25:43.511Z" style="display:inline-block; width:125px; vertical-align:baseline;">
+            </div>
+            <div class="form-row">
+                <label for="node-input-schedule"><i class="fa fa-calendar-o"></i> Schedule</label>
+                <input type="checkbox" id="node-input-schedule">
+            </div>
+            <div class="form-row form-row-action-schedule">
+                <label for="node-input-unit">every</label>
+                <input type="text" id="node-input-size" placeholder="1" style="display:inline-block; width:50px; vertical-align:baseline;">
+                <select type="text" id="node-input-unit" style="display:inline-block; vertical-align:baseline;">
+                    <option value="HOURLY">hour(s)</option>
+                    <option value="DAILY">day(s)</option>
+                    <option value="WEEKLY">week(s)</option>
+                    <option value="MONTHLY">month(s)</option>
+                    <option value="YEARLY">year(s)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bunq-monetaryaccount">
+    <p>Get a collection of all your MonetaryAccounts.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload.userID <span class="property-type">string | number</span></dt>
+        <dd> the userID. </dd>
+    </dl>
+    <h4>Get monetary account(s)</h4>
+    <dl class="message-properties">
+        <dt class="optional">payload.itemID <span class="property-type">string | number</span></dt>
+        <dd> the itemID. </dd>
+    </dl>
+    <h4>Get saving(s)</h4>
+    <dl class="message-properties">
+        <dt class="optional">payload.itemID <span class="property-type">string | number</span></dt>
+        <dd> the itemID. </dd>
+    </dl>
+    <h4>Get monetary account(s)</h4>
+    <dl class="message-properties">
+        <dt class="optional">payload.itemID <span class="property-type">string | number</span></dt>
+        <dd> the itemID. </dd>
+    </dl>
+    <h4>Get saving(s)</h4>
+    <dl class="message-properties">
+        <dt class="optional">payload.itemID <span class="property-type">string | number</span></dt>
+        <dd> the itemID. </dd>
+    </dl>
+    <h4>Get schedule payment(s)</h4>
+    <dl class="message-properties">
+        <dt class="optional">payload.itemID <span class="property-type">string | number</span></dt>
+        <dd> the itemID. </dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">json</span></dt>
+                <dd>the response of the API.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt>error <span class="property-type">bool</span></dt>
+                <dd>marks the request as an error.</dd>
+            </dl>
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">json</span></dt>
+                <dd>the error of the API.</dd>
+            </dl>
+        </li>
+    </ol>
+</script>

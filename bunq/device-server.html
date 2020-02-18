@@ -1,0 +1,73 @@
+<script type="text/javascript">
+	RED.nodes.registerType('bunq-deviceserver', {
+		category: 'bunq',
+		color: '#FE2851',
+        defaults: {
+            name: {value:''},
+            bunqnode: {value:'', type:'bunq-config'},
+            description: {value:'Node-Red'},
+            permittedips: {value:'["*"]'}
+        },
+		inputs: 1,
+		outputs: 1,
+		icon: 'bunq.png',
+		label: function () {
+			return this.name || 'bunq Device Server';
+		},
+		paletteLabel: 'Add Device to Device Server'
+	});
+</script>
+
+<script type="text/x-red" data-template-name="bunq-deviceserver">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-bunqnode"><i class="fa fa-database"></i> Connection</label>
+        <input type="text" id="node-input-bunqnode">
+    </div>
+    <div class="form-row">
+        <label for="node-input-description"><i class="fa fa-commenting-o"></i> Device description</label>
+        <input type="text" id="node-input-description">
+    </div>
+    <div class="form-row">
+        <label for="node-input-permittedips"><i class="fa fa-filter"></i> Permitted IPs</label>
+        <input type="text" id="node-input-permittedips">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bunq-deviceserver">
+    <p>Create a new DeviceServer providing the installation token in the header and signing the request with the private part of the key you used to create the installation. The API Key that you are using will be bound to the IP address of the DeviceServer which you have created. Using a Wildcard API Key gives you the freedom to make API calls even if the IP address has changed after the POST device-server.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload.description <span class="property-type">string</span></dt>
+        <dd> the device description. </dd>
+    </dl>
+    <h4>Get by itemID</h4>
+    <dl class="message-properties">
+        <dt>payload.permittedips <span class="property-type">array</span></dt>
+        <dd> the permitted IPs. </dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">json</span></dt>
+                <dd>the response of the API.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt>error <span class="property-type">bool</span></dt>
+                <dd>marks the request as an error.</dd>
+            </dl>
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">json</span></dt>
+                <dd>the error of the API.</dd>
+            </dl>
+        </li>
+    </ol>
+</script>

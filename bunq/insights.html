@@ -1,0 +1,70 @@
+<script type="text/javascript">
+	RED.nodes.registerType('bunq-insights', {
+		category: 'bunq',
+		color: '#8F8E94',
+        defaults: {
+            name: {value:''},
+            bunqnode: {value:'', type:'bunq-config'},
+            timestart: {value:''},
+            timeend: {value:''}
+        },
+		inputs: 1,
+		outputs: 1,
+		icon: 'bunq.png',
+		label: function () {
+			return this.name || 'bunq Insights';
+		},
+        paletteLabel: 'Get Insights'
+	});
+</script>
+
+<script type="text/x-red" data-template-name="bunq-insights">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-bunqnode"><i class="fa fa-database"></i> Connection</label>
+        <input type="text" id="node-input-bunqnode">
+    </div>
+    <div class="form-row">
+        <label for="node-input-timestart"><i class="fa fa-calendar-o"></i> Time range</label>
+        <input type="text" id="node-input-timestart" placeholder="optional: 2019-12-13" style="display:inline-block; width:125px; vertical-align:baseline;">
+        <span> - </span>
+        <input type="text" id="node-input-timeend" placeholder="optional: 2019-12-13" style="display:inline-block; width:125px; vertical-align:baseline;">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bunq-insights">
+    <p>Used to get insights about transactions between given time range.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload.time_start <span class="property-type">string</span></dt>
+        <dd> the start time. </dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>payload.time_end <span class="property-type">string</span></dt>
+        <dd> the end time. </dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">json</span></dt>
+                <dd>the response of the API.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt>error <span class="property-type">bool</span></dt>
+                <dd>marks the request as an error.</dd>
+            </dl>
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">json</span></dt>
+                <dd>the error of the API.</dd>
+            </dl>
+        </li>
+    </ol>
+</script>

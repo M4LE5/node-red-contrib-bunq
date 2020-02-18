@@ -1,0 +1,45 @@
+<script type="text/javascript">
+	RED.nodes.registerType('bunq-config', {
+		category: 'config',
+        defaults: {
+            name: {value: ''},
+            privatekeyclient: {value: ''},
+            installationtoken: {value: '', required: true},
+            xbunqgeolocation: {value: '0 0 0 0 000'},
+            sandbox: {value: false}
+        },
+        credentials: {
+            apikey: {type: 'text'},
+        },
+		label: function () {
+			return this.name || 'bunq';
+		}
+	});
+</script>
+
+<script type="text/x-red" data-template-name="bunq-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-apikey"><i class="icon-tag"></i> API key</label>
+        <input type="text" id="node-config-input-apikey" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-privatekeyclient"><i class="icon-tag"></i> Private Key Client</label>
+        <input type="text" id="node-config-input-privatekeyclient" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-installationtoken"><i class="icon-tag"></i> Installation Token</label>
+        <input type="text" id="node-config-input-installationtoken" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-xbunqgeolocation"><i class="icon-tag"></i> X-Bunq-Geolocation</label>
+        <input type="text" id="node-config-input-xbunqgeolocation" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-sandbox"><i class="icon-tag"></i> use Sandbox</label>
+        <input type="checkbox" id="node-config-input-sandbox" placeholder="">
+    </div>
+</script>

@@ -1,0 +1,118 @@
+<script type="text/javascript">
+	RED.nodes.registerType('bunq-card', {
+		category: 'bunq',
+		color: '#54C7FC',
+        defaults: {
+            name: {value:''},
+            bunqnode: {value:'', type:'bunq-config'},
+            action: {value:'get'},
+            itemid: {value:''},
+            pincode: {value:''},
+            status: {value:''}
+        },
+		inputs: 1,
+		outputs: 1,
+		icon: 'bunq.png',
+		label: function () {
+			return this.name || 'bunq Card';
+		},
+        paletteLabel: 'Card actions',
+        oneditprepare: function() {
+            $('#node-input-action').on('change', function() {
+                $(".form-row-action-setPin").hide();
+                $(".form-row-action-setStatus").hide();
+                $("#node-input-itemid").attr("placeholder", "optional");
+                if (this.value === 'setPin') {
+                    $(".form-row-action-setPin").show();
+                    $("#node-input-itemid").attr("placeholder", "");
+                } else if (this.value === 'setStatus') {
+                    $(".form-row-action-setStatus").show();
+                    $("#node-input-itemid").attr("placeholder", "");
+                }
+            });
+        }
+	});
+</script>
+
+<script type="text/x-red" data-template-name="bunq-card">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-bunqnode"><i class="fa fa-database"></i> Connection</label>
+        <input type="text" id="node-input-bunqnode">
+    </div>
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-random"></i> <span>Action</span></label>
+        <select type="text" id="node-input-action" style="width: 250px;">
+            <option value="get">Get</option>
+            <option value="setPin">Set PIN code</option>
+            <option value="setStatus">Set status</option>
+        </select>
+    </div>
+    <div class="form-row form-row-action-itemID">
+        <label for="node-input-itemid"><i class="fa fa-crosshairs"></i> itemID</label>
+        <input type="text" id="node-input-itemid" placeholder="optional">
+    </div>
+    <div class="form-row form-row-action-setPin">
+        <label for="node-input-pincode"><i class="fa fa-key"></i> PIN code</label>
+        <input type="text" id="node-input-pincode">
+    </div>
+    <div class="form-row form-row-action-setStatus">
+        <label for="node-input-status"><i class="fa fa-chain-broken"></i> Status</label>
+        <select type="text" id="node-input-status" style="width: 250px;">
+            <option value="true">ACTIVE</option>
+            <option value="false">DEACTIVATED</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bunq-card">
+    <p>Return all the cards available to the user or set actions for specific card.</p>
+    
+    <h3>Inputs</h3>
+    <h4>Get</h4>
+    <dl class="message-properties">
+        <dt class="optional">payload.itemID <span class="property-type">string | number</span></dt>
+        <dd> the itemID. </dd>
+    </dl>
+    <h4>Set PIN code</h4>
+    <dl class="message-properties">
+        <dt>payload.itemID <span class="property-type">string | number</span></dt>
+        <dd> the itemID. </dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>payload.pincode <span class="property-type">string</span></dt>
+        <dd> the PIN code to set. </dd>
+    </dl>
+    <h4>Set Status</h4>
+    <dl class="message-properties">
+        <dt>payload.itemID <span class="property-type">string | number</span></dt>
+        <dd> the itemID. </dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>payload.status <span class="property-type">string</span></dt>
+        <dd> the status to set (ACTIVE or DEACTIVATED). </dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">json</span></dt>
+                <dd>the response of the API.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt>error <span class="property-type">bool</span></dt>
+                <dd>marks the request as an error.</dd>
+            </dl>
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">json</span></dt>
+                <dd>the error of the API.</dd>
+            </dl>
+        </li>
+    </ol>
+</script>

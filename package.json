@@ -1,0 +1,43 @@
+{
+  "name": "node-red-contrib-bunq",
+  "version": "1.0.0",
+  "description": "Node-RED nodes for the bunq API.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/M4LE5/node-red-contrib-bunq.git"
+  },
+  "scripts": {
+    "test": "node-red"
+  },
+  "keywords": [
+    "node-red",
+    "bunq"
+  ],
+  "author": "M4LE5",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/M4LE5/node-red-contrib-bunq/issues"
+  },
+  "homepage": "https://github.com/M4LE5/node-red-contrib-bunq#readme",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "faker": "^4.1.0"
+  },
+  "node-red": {
+    "nodes": {
+      "bunq-config": "bunq/config.js",
+      "bunq-installation": "bunq/installation.js",
+      "bunq-deviceserver": "bunq/device-server.js",
+      "bunq-sessionserver": "bunq/session-server.js",
+      "bunq-user": "bunq/user.js",
+      "bunq-event": "bunq/event.js",
+      "bunq-card": "bunq/card.js",
+      "bunq-monetaryaccount": "bunq/monetary-account.js",
+      "bunq-billingcontractsubscription": "bunq/billing-contract-subscription.js",
+      "bunq-bunqmetab": "bunq/bunqme-tab.js",
+      "bunq-insights": "bunq/insights.js",
+      "bunq-treeprogress": "bunq/tree-progress.js",
+      "bunq-sandbox": "bunq/sandbox.js"
+    }
+  }
+}
