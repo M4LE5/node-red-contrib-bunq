@@ -21,7 +21,7 @@
             var that = this;
             $.getJSON('bunq/user/monetary-account', function(data) {
                 $('#node-input-monetaryaccountid').empty();
-                $('<option value="0">All</option>').appendTo('#node-input-monetaryaccountid');
+                $('<option value="null">All</option>').appendTo('#node-input-monetaryaccountid');
                 if (data.length !== 0) {
                     for (i = 0; i < data.length; i++) {
                         $('<option/>',{
