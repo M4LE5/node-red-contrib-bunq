@@ -5,7 +5,10 @@
         defaults: {
             name: {value:''},
             bunqnode: {value:'', type:'bunq-config'},
-            itemid: {value:''}
+            itemid: {value:''},
+            monetaryaccountid: {value:''},
+            status: {value:''},
+            displayuserevent: {value:''}
         },
 		inputs: 1,
 		outputs: 1,
@@ -13,7 +16,26 @@
 		label: function () {
 			return this.name || 'bunq Event';
 		},
-        paletteLabel: 'Get Events'
+        paletteLabel: 'Get Events',
+        oneditprepare: function() {
+            var that = this;
+            $.getJSON('bunq/user/monetary-account', function(data) {
+                $('#node-input-monetaryaccountid').empty();
+                $('<option value="0">All</option>').appendTo('#node-input-monetaryaccountid');
+                if (data.length !== 0) {
+                    for (i = 0; i < data.length; i++) {
+                        $('<option/>',{
+                                'value': data[i].id,
+                                'text': data[i].description + " (" + data[i].v + ")"
+                        }).appendTo('#node-input-monetaryaccountid');
+                    }
+                }
+                $("#node-input-monetaryaccountid").val($("#node-input-monetaryaccountid option:first").val());
+                $('#node-input-monetaryaccountid option[value="'+that.monetaryaccountid+'"]').prop('selected', true);
+            });
+            $("#node-input-status").val($("#node-input-status option:first").val());
+            $('#node-input-status option[value="'+that.status+'"]').prop('selected', true);
+        }
 	});
 </script>
 
@@ -30,6 +52,23 @@
         <label for="node-input-itemid"><i class="fa fa-crosshairs"></i> itemID</label>
         <input type="text" id="node-input-itemid" placeholder="optional">
     </div>
+    <div class="form-row form-row-action-accountID">
+        <label for="node-input-monetaryaccountid"><i class="fa fa-university"></i> monetary-accountID</label>
+        <select type="text" id="node-input-monetaryaccountid" style="width: 250px;">
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-status"><i class="fa fa-filter"></i> Filter by status</label>
+        <select type="text" id="node-input-status" style="width: 250px;">
+            <option value="none">none</option>
+            <option value="AWAITING_REPLY">AWAITING_REPLY</option>
+            <option value="FINALIZED">FINALIZED</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-displayuserevent"><i class="fa fa-user"></i> Include user events</label>
+        <input type="checkbox" id="node-input-displayuserevent">
+    </div>
 </script>
 
 <script type="text/x-red" data-help-name="bunq-event">
@@ -37,8 +76,20 @@
     
     <h3>Inputs</h3>
     <dl class="message-properties">
+        <dt class="optional">payload.accountID <span class="property-type">string | number</span></dt>
+        <dd> the accountID. </dd>
+    </dl>
+    <dl class="message-properties">
         <dt class="optional">payload.itemID <span class="property-type">string | number</span></dt>
         <dd> the itemID. </dd>
+    </dl>
+    <dl class="message-properties">
+        <dt class="optional">payload.status <span class="property-type">string</span></dt>
+        <dd> filter by status AWAITING_REPLY or FINALIZED. </dd>
+    </dl>
+    <dl class="message-properties">
+        <dt class="optional">payload.displayuserevent <span class="property-type">bool</span></dt>
+        <dd> set to true or false. </dd>
     </dl>
 
     <h3>Outputs</h3>

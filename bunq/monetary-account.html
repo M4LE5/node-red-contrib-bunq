@@ -38,15 +38,14 @@
                     for (i = 0; i < data.length; i++) {
                         $('<option/>',{
                                 'value': data[i].id,
-                                'text': data[i].t + " (" + data[i].v + ")"
+                                'text': data[i].description + " (" + data[i].v + ")"
                         }).appendTo('#node-input-monetaryaccountid');
                         $('<option/>',{
                                 'value': data[i].v,
-                                'text': data[i].t + " (" + data[i].v + ")"
+                                'text': data[i].description + " (" + data[i].v + ")"
                         }).appendTo('#node-input-counterpartyvalinternal');
                     }
                 }
-                console.log('#node-input-monetaryaccountid option[value="'+that.monetaryaccountid+'"]');
                 $("#node-input-monetaryaccountid").val($("#node-input-monetaryaccountid option:first").val());
                 $('#node-input-monetaryaccountid option[value="'+that.monetaryaccountid+'"]').prop('selected', true);
                 $("#node-input-counterpartyvalinternal").val($("#node-input-counterpartyvalinternal option:first").val());

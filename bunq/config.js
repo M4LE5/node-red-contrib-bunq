@@ -40,7 +40,8 @@ module.exports = function(RED) {
                             retoure.push({
                                 "v": acc[i][k].alias[ii].value,
                                 "t": acc[i][k].alias[ii].name,
-                                "id": acc[i][k].id
+                                "id": acc[i][k].id,
+                                "description": acc[i][k].description,
                             });
                         }
                     }
