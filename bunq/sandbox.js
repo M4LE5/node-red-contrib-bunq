@@ -24,7 +24,7 @@ module.exports = function (RED) {
 			
             if (bunqnode.bunqInstance.config.sandbox==false) {
                 node.error("Connection is not a sandbox");
-                node.status({fill:"red",shape:"ring",text:error.message});
+                node.status({fill:"red",shape:"ring",text:"Non sandbox connection"});
             } else {
                 node.status({fill:"yellow",shape:"ring",text:"Initialization"});
             
