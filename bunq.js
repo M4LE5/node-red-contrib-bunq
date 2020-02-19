@@ -245,8 +245,7 @@ class bunq {
                 
                 if (method=="POST") {
                     t_class.request.post(options, function (error, response, body) {
-                        msg.response = response;
-                        msg.payload = response;
+                        msg.payload = response.body;
                         try {
                             msg.payload = JSON.parse(response.body);
                         } catch(e) {}
@@ -257,8 +256,7 @@ class bunq {
                     });
                 } else if (method=="PUT") {
                     t_class.request.put(options, function (error, response, body) {
-                        msg.response = response;
-                        msg.payload = response;
+                        msg.payload = response.body;
                         try {
                             msg.payload = JSON.parse(response.body);
                         } catch(e) {}
@@ -269,8 +267,7 @@ class bunq {
                     });
                 } else if (method=="DELETE") {
                     t_class.request.delete(options, function (error, response, body) {
-                        msg.response = response;
-                        msg.payload = response;
+                        msg.payload = response.body;
                         try {
                             msg.payload = JSON.parse(response.body);
                         } catch(e) {}
@@ -281,8 +278,7 @@ class bunq {
                     });
                 } else if (method=="GET") {
                     t_class.request.get(options, function (error, response, body) {
-                        msg.response = response;
-                        msg.payload = response;
+                        msg.payload = response.body;
                         try {
                             msg.payload = JSON.parse(response.body);
                         } catch(e) {}
