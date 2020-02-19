@@ -6,9 +6,9 @@
             name: {value:''},
             bunqnode: {value:'', type:'bunq-config'},
             itemid: {value:''},
-            monetaryaccountid: {value:''},
-            status: {value:''},
-            displayuserevent: {value:''}
+            monetaryaccountid: {value:'null'},
+            status: {value:'none'},
+            displayuserevent: {value:true}
         },
 		inputs: 1,
 		outputs: 1,
@@ -30,11 +30,9 @@
                         }).appendTo('#node-input-monetaryaccountid');
                     }
                 }
-                $("#node-input-monetaryaccountid").val($("#node-input-monetaryaccountid option:first").val());
                 $('#node-input-monetaryaccountid option[value="'+that.monetaryaccountid+'"]').prop('selected', true);
             });
-            $("#node-input-status").val($("#node-input-status option:first").val());
-            $('#node-input-status option[value="'+that.status+'"]').prop('selected', true);
+            $('#node-input-status option[value="'+this.status+'"]').prop('selected', true);
         }
 	});
 </script>
